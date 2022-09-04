@@ -1,0 +1,61 @@
+extends base
+mixin sidenav(img,text,link,active)
+  li(class=`${active? "side-nav--active":""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`img/icons.svg#icon-${img}`)
+      | #{text}
+
+block content
+    main.main
+      .user-view
+        nav.user-view__menu
+          ul.side-nav
+            +sidenav("settings","Settings","#",true)
+            +sidenav("briefcase","My bookings","/my-tours")
+            +sidenav("star","My reviews","#")
+            +sidenav("credit-card","Billing","#")
+          .admin-nav
+          -if(user.role==="admin")
+            h5.admin-nav__heading Admin
+            ul.side-nav
+              +sidenav("map","Manage tours","#")
+              +sidenav("users","Manage users","#")
+              +sidenav("star","Manage Reviews","#")
+              +sidenav("briefcase","Manage bookings ","#")
+        .user-view__content
+          .user-view__form-container
+            h2.heading-secondary.ma-bt-md Your account settings
+            //- Without api
+            //- form.form.form-user-data(action="/submit-user-data" method="POST" enctype="multipart/formdata")
+            //- With api the enctype="multipart/form-data" is used for file uplaod
+            form.form.form-user-data
+              .form__group
+                label.form__label(for='name') Name
+                input#name.form__input(type='text', value=`${user.name}`, required name="name")
+              .form__group.ma-bt-md
+                label.form__label(for='email') Email address
+                input#email.form__input(type='email', value=`${user.email}`, required name="email")
+              .form__group.form__photo-upload
+                img.form__user-photo(src=`img/users/${user.photo}`, alt='User photo')
+                input.form__upload(type="file", accept="image/*", id="photo", name="photo")
+                label(for="photo") Choose new photo
+              .form__group.right
+                button.btn.btn--small.btn--green Save settings
+
+          .line &nbsp;
+
+          .user-view__form-container
+            h2.heading-secondary.ma-bt-md Password change
+            form.form.form-user-settings
+              .form__group
+                label.form__label(for='password-current') Current password
+                input#password-current.form__input(type='password', placeholder='••••••••', required, minlength='8')
+              .form__group
+                label.form__label(for='password') New password
+                input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+              .form__group.ma-bt-lg
+                label.form__label(for='password-confirm') Confirm password
+                input#password-confirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+              .form__group.right
+                button.btn.btn--small.btn--green.btn--save-password Save password
